@@ -36,9 +36,17 @@ if ( ! defined( 'ABSPATH' ) ) // Making sure we are coming from WP
 
 class FahaniPlugin {
 
+    function __construct() {
+        // Calling the hook init on the method custom type, the one adding the ne post tye 'book'
+        add_action( 'init', array($this, 'custom_post_type' ) );
+    }
+
     function activate() {
         // Generate a custom post type
-        // Flush rewrite rules
+        $this->custom_post_type();
+
+        // Flush rewrite rules. Necessary when writing new stuff in the database so WP became aware of it
+        flush_rewrite_rules();
     }
 
     function deactivate() {
@@ -49,19 +57,23 @@ class FahaniPlugin {
         // Delete Custom post type
         // Delete custom database data
     }
+
+    function custom_post_type() {
+        register_post_type( 'book', ['public' => true, 'label' => 'Books']);
+    }
 }
 
 // Check if the class we are writing doesn't exist
 if ( class_exists( 'FahaniPlugin' ) )
 {
-    $fahaniPlagin = new FahaniPlugin(); // Instancing the class
+    $fahaniPlugin = new FahaniPlugin(); // Instancing the class
 }
 
 // Lifecycle of a plugin
 // Activation
-register_activation_hook( __FILE__, array( $fahaniPlagin, 'activate' ) );
+register_activation_hook( __FILE__, array( $fahaniPlugin, 'activate' ) );
 
 // Deactivation
-register_deactivation_hook( __FILE__, array( $fahaniPlagin, 'deactivate' ) );
+register_deactivation_hook( __FILE__, array( $fahaniPlugin, 'deactivate' ) );
 
 // Uninstall

@@ -41,6 +41,10 @@ class FahaniPlugin {
         add_action( 'init', array($this, 'custom_post_type' ) );
     }
 
+    function register() { // Actions to call the enqueue
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
+    }
+
     function activate() {
         // Generate a custom post type
         $this->custom_post_type();
@@ -63,6 +67,12 @@ class FahaniPlugin {
         register_post_type( 'book', ['public' => true, 'label' => 'Books']);
     }
 
+    function enqueue() {
+        // Enqueue all our scripts
+        wp_enqueue_style( 'mypluginstyle', plugins_url( '/assets/mystyle.css', __FILE__ ) );
+        wp_enqueue_script( 'mypluginscript', plugins_url( '/assets/myscript.js', __FILE__ ) );
+    }
+
 
 }
 
@@ -70,6 +80,7 @@ class FahaniPlugin {
 if ( class_exists( 'FahaniPlugin' ) )
 {
     $fahaniPlugin = new FahaniPlugin(); // Instancing the class
+    $fahaniPlugin->register();
 }
 
 // Lifecycle of a plugin

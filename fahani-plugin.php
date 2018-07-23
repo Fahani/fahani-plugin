@@ -34,63 +34,68 @@ if ( ! defined( 'ABSPATH' ) ) // Making sure we are coming from WP
     die( 'Hold your horses.' );
 }
 
-class FahaniPlugin {
-
-    function __construct() {
-        // Calling the hook init on the method custom type, the one adding the ne post tye 'book'
-        add_action( 'init', array($this, 'custom_post_type' ) );
-    }
-
-    function register() { // Actions to call the enqueue
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
-    }
-
-    function activate() {
-        // Generate a custom post type
-        $this->custom_post_type();
-
-        // Flush rewrite rules. Necessary when writing new stuff in the database so WP became aware of it
-        flush_rewrite_rules();
-    }
-
-    function deactivate() {
-        // Flush rewrite rules
-        flush_rewrite_rules();
-    }
-
-    static function uninstall() {
-        // Delete Custom post type
-        // Delete custom database data
-    }
-
-    function custom_post_type() {
-        register_post_type( 'book', ['public' => true, 'label' => 'Books']);
-    }
-
-    function enqueue() {
-        // Enqueue all our scripts
-        wp_enqueue_style( 'mypluginstyle', plugins_url( '/assets/mystyle.css', __FILE__ ) );
-        wp_enqueue_script( 'mypluginscript', plugins_url( '/assets/myscript.js', __FILE__ ) );
-    }
-
-
-}
-
 // Check if the class we are writing doesn't exist
-if ( class_exists( 'FahaniPlugin' ) )
-{
+if ( ! class_exists( 'FahaniPlugin' ) ) {
+
+    class FahaniPlugin
+    {
+
+        function register()
+        {
+            // Actions to call the enqueue
+            add_action('admin_enqueue_scripts', array($this, 'enqueue'));
+
+            $this->create_post_type();
+        }
+
+        protected function create_post_type()
+        {
+            // Calling the hook init on the method custom type, the one adding the ne post tye 'book'
+            add_action('init', array($this, 'custom_post_type'));
+        }
+
+        /*Doing the uninstall in a separate file
+         * static function uninstall()
+        {
+            // Delete Custom post type
+            // Delete custom database data
+        }*/
+
+        function custom_post_type()
+        {
+            register_post_type('book', ['public' => true, 'label' => 'Books']);
+        }
+
+        function enqueue()
+        {
+            // Enqueue all our scripts
+            wp_enqueue_style('mypluginstyle', plugins_url('/assets/mystyle.css', __FILE__));
+            wp_enqueue_script('mypluginscript', plugins_url('/assets/myscript.js', __FILE__));
+        }
+
+        function activate()
+        {
+            require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-activate.php';
+            FahaniPluginActivate::activate();
+        }
+    }
+
     $fahaniPlugin = new FahaniPlugin(); // Instancing the class
     $fahaniPlugin->register();
+
+
+    // Lifecycle of a plugin
+    // Activation. Using the activate method in the class
+        register_activation_hook(__FILE__, array($fahaniPlugin, 'activate'));
+
+    // Deactivation
+    // Using directly the class and the static method
+        require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-deactivate.php';
+        register_deactivation_hook(__FILE__, array('FahaniPluginDeactivate', 'deactivate'));
+
+    // Uninstall
+    //register_uninstall_hook( __FILE__, array( $fahaniPlugin, 'uninstall' ) );
+    // Alternative we can create an uninstall.php file and perform the uninstall operations over there. This file will called
+    // by wordpress.
+
 }
-
-// Lifecycle of a plugin
-// Activation
-register_activation_hook( __FILE__, array( $fahaniPlugin, 'activate' ) );
-
-// Deactivation
-register_deactivation_hook( __FILE__, array( $fahaniPlugin, 'deactivate' ) );
-
-// Uninstall
-//register_uninstall_hook( __FILE__, array( $fahaniPlugin, 'uninstall' ) );
-// Alternative we can create an uninstall.php file and perform the uninstall operations over there. This file will called
-// by wordpress.

@@ -5,7 +5,9 @@
 
 namespace inc\pages;
 
-class Admin
+use \inc\base\BaseController;
+
+class Admin extends BaseController
 {
     public function register() {
         // Setting admin page
@@ -19,6 +21,6 @@ class Admin
 
     // Load the template for the admin panel page
     public function admin_index() {
-        require_once PLUGIN_PATH . 'templates/admin.php';
+        require_once $this->plugin_path . 'templates/admin.php';
     }
 }

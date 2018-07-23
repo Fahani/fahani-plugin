@@ -3,7 +3,7 @@
  * @package FahaniPlugin
  */
 
-namespace inc;
+namespace inc\base;
 
 class Activate {
 

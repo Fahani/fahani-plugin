@@ -34,6 +34,13 @@ if ( ! defined( 'ABSPATH' ) ) // Making sure we are coming from WP
     die( 'Hold your horses.' );
 }
 
+if ( file_exists( dirname( __FILE__  ) . '/vendor/autoload.php' ) ) {
+    require_once dirname( __FILE__  ) . '/vendor/autoload.php';
+}
+
+use inc\Activate;
+use inc\Deactivate;
+
 // Check if the class we are writing doesn't exist
 if ( ! class_exists( 'FahaniPlugin' ) ) {
 
@@ -103,8 +110,8 @@ if ( ! class_exists( 'FahaniPlugin' ) ) {
 
         function activate()
         {
-            require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-activate.php';
-            FahaniPluginActivate::activate();
+            //require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-activate.php'; // We don't need this, using namespaces
+            Activate::activate();
         }
     }
 
@@ -118,8 +125,8 @@ if ( ! class_exists( 'FahaniPlugin' ) ) {
 
     // Deactivation
     // Using directly the class and the static method
-        require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-deactivate.php';
-        register_deactivation_hook(__FILE__, array('FahaniPluginDeactivate', 'deactivate'));
+        //require_once plugin_dir_path(__FILE__) . 'inc/fahani-plugin-deactivate.php'; // We don't need this, using namespaces
+        register_deactivation_hook(__FILE__, array('Deactivate', 'deactivate'));
 
     // Uninstall
     //register_uninstall_hook( __FILE__, array( $fahaniPlugin, 'uninstall' ) );

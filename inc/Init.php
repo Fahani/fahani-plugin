@@ -14,7 +14,8 @@ final class Init { // PHP avoid to extends this class in another class. Protect 
     public static function get_services() {
         return array(
             pages\Admin::class,
-            base\Enqueue::class
+            base\Enqueue::class,
+            base\SettingsLinks::class
         );
     }
 

@@ -29,17 +29,37 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// If this file is called outside wordpress structure, abort
 if ( ! defined( 'ABSPATH' ) ) // Making sure we are coming from WP
 {
     die( 'Hold your horses.' );
 }
 
+// Require once the Composer Autoload
 if ( file_exists( dirname( __FILE__  ) . '/vendor/autoload.php' ) ) {
     require_once dirname( __FILE__  ) . '/vendor/autoload.php';
 }
 
+// Constants to use along our plugin
 define( 'PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'PLUGIN', plugin_basename( __FILE__ ) );
+
+use inc\base\Activate;
+use inc\base\Deactivate;
+
+
+function activate_fahani_plugin() {
+    Activate::activate();
+}
+
+function deactivate_fahani_plugin() {
+    Deactivate::deactivate();
+}
+
+// The register_activation and register_deactivation needs to be outside of a Class thats why they are here
+register_activation_hook( __FILE__, 'activate_fahani_plugin' );
+register_deactivation_hook( __FILE__, 'deactivate_fahani_plugin' );
 
 if ( class_exists( 'inc\\Init' ) ) {
     inc\Init::register_services();

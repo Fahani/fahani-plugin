@@ -40,12 +40,40 @@ if ( ! class_exists( 'FahaniPlugin' ) ) {
     class FahaniPlugin
     {
 
+        public $plugin;
+
+        public function __construct() {
+            $this->plugin = plugin_basename( __FILE__ );
+        }
+
         function register()
         {
             // Actions to call the enqueue
             add_action('admin_enqueue_scripts', array($this, 'enqueue'));
 
             $this->create_post_type();
+
+            // Setting admin page
+            add_action( 'admin_menu', array( $this, 'add_admin_pages' ) );
+
+            add_filter( "plugin_action_links_$this->plugin", array( $this, 'settings_link' ) );
+        }
+
+        public function settings_link( $links ) {
+            // Add custom settings link in the plugin
+            $links[] = '<a href="options-general.php?page=fahani_plugin">Settings</a>';
+            //array_push( $links, $settings_link );
+            return $links;
+        }
+
+        // Hook to add a new page in the admin panel
+        public function add_admin_pages() {
+            add_menu_page( 'Fahani Plugin', 'Fahani', 'manage_options', 'fahani_plugin' /* slug */, array( $this, 'admin_index'), 'dashicons-store', 110 /* position */);
+        }
+
+        // Load the template for the admin panel page
+        public function admin_index() {
+            require_once plugin_dir_path( __FILE__ ) . 'templates/admin.php';
         }
 
         protected function create_post_type()

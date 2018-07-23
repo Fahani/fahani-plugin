@@ -51,9 +51,10 @@ class FahaniPlugin {
 
     function deactivate() {
         // Flush rewrite rules
+        flush_rewrite_rules();
     }
 
-    function uninstall() {
+    static function uninstall() {
         // Delete Custom post type
         // Delete custom database data
     }
@@ -61,6 +62,8 @@ class FahaniPlugin {
     function custom_post_type() {
         register_post_type( 'book', ['public' => true, 'label' => 'Books']);
     }
+
+
 }
 
 // Check if the class we are writing doesn't exist
@@ -77,3 +80,6 @@ register_activation_hook( __FILE__, array( $fahaniPlugin, 'activate' ) );
 register_deactivation_hook( __FILE__, array( $fahaniPlugin, 'deactivate' ) );
 
 // Uninstall
+//register_uninstall_hook( __FILE__, array( $fahaniPlugin, 'uninstall' ) );
+// Alternative we can create an uninstall.php file and perform the uninstall operations over there. This file will called
+// by wordpress.

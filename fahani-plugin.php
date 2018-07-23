@@ -29,7 +29,39 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-if ( ! defined( 'ABSPATH' ) ) { // Making sure we are coming from WP
-    die;
+if ( ! defined( 'ABSPATH' ) ) // Making sure we are coming from WP
+{
+    die( 'Hold your horses.' );
 }
 
+class FahaniPlugin {
+
+    function activate() {
+        // Generate a custom post type
+        // Flush rewrite rules
+    }
+
+    function deactivate() {
+        // Flush rewrite rules
+    }
+
+    function uninstall() {
+        // Delete Custom post type
+        // Delete custom database data
+    }
+}
+
+// Check if the class we are writing doesn't exist
+if ( class_exists( 'FahaniPlugin' ) )
+{
+    $fahaniPlagin = new FahaniPlugin(); // Instancing the class
+}
+
+// Lifecycle of a plugin
+// Activation
+register_activation_hook( __FILE__, array( $fahaniPlagin, 'activate' ) );
+
+// Deactivation
+register_deactivation_hook( __FILE__, array( $fahaniPlagin, 'deactivate' ) );
+
+// Uninstall
